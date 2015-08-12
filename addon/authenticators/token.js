@@ -134,8 +134,8 @@ export default Base.extend({
       }, function(xhr) {
         Ember.run(function() {
           reject({
-            statusCode: xhr.statusCode,
-            message: xhr.responseJSON || xhr.responseText
+            statusCode: xhr.status,
+            response: xhr.responseJSON || xhr.responseText
           });
         });
       });
