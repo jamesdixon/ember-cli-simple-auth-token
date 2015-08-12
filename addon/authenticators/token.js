@@ -133,7 +133,10 @@ export default Base.extend({
         });
       }, function(xhr) {
         Ember.run(function() {
-          reject(xhr.responseJSON || xhr.responseText);
+          reject({
+            statusCode: xhr.statusCode,
+            message: xhr.responseJSON || xhr.responseText
+          });
         });
       });
     });
