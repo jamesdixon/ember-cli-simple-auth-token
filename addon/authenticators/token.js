@@ -123,17 +123,21 @@ export default Base.extend({
     @param {Object} options The credentials to authenticate the session with
     @return {Ember.RSVP.Promise} A promise that resolves when an auth token is successfully acquired from the server and rejects otherwise
   */
-  authenticate: function(credentials) {
+  authenticate: function(credentials, additionalParams) {
     var _this = this;
     return new Ember.RSVP.Promise(function(resolve, reject) {
       var data = _this.getAuthenticateData(credentials);
+      Ember.$.extend(data, additionalParams);
       _this.makeRequest(data).then(function(response) {
         Ember.run(function() {
           resolve(_this.getResponseData(response));
         });
       }, function(xhr) {
         Ember.run(function() {
-          reject(xhr.responseJSON || xhr.responseText);
+          reject({
+            statusCode: xhr.status,
+            response: xhr.responseJSON || xhr.responseText
+          });
         });
       });
     });

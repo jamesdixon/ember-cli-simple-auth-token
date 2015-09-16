@@ -158,11 +158,12 @@ export default TokenAuthenticator.extend({
                                  successfully acquired from the server and rejects
                                  otherwise
   */
-  authenticate: function(credentials) {
+  authenticate: function(credentials, additionalParams) {
     var _this = this;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       var data = _this.getAuthenticateData(credentials);
+      Ember.$.extend(data, additionalParams);
 
       _this.makeRequest(_this.serverTokenEndpoint, data).then(function(response) {
         Ember.run(function() {
@@ -181,7 +182,10 @@ export default TokenAuthenticator.extend({
         });
       }, function(xhr) {
         Ember.run(function() {
-          reject(xhr.responseJSON || xhr.responseText);
+          reject({
+            statusCode: xhr.status,
+            response: xhr.responseJSON || xhr.responseText
+          });
         });
       });
     });
